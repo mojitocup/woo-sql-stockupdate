@@ -1,0 +1,23 @@
+UPDATE
+    `wp_postmeta`
+SET
+    `meta_value` = 'outofstock'
+WHERE
+    meta_value = 'instock' AND meta_key = '_stock_status'
+   AND `post_id` IN (
+        SELECT 
+            `object_id` AS product_id 
+        FROM 
+            `wp_term_relationships` 
+        WHERE 
+            term_taxonomy_id = 2727
+            AND `object_id` IN (
+                   SELECT
+                    `ID`
+                FROM
+                    `wp_posts`
+                WHERE
+                    `post_type` = 'product'
+                    AND `post_status` = 'publish'
+                    AND `post_modified` < "2020-12-02"
+            ))
